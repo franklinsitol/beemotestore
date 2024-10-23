@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beemote Store</title>
-    <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://beemote.online/assets/images/logo-beemote-png-96x96.webp" type="image/png">
+    <link rel="manifest" href="/manifest.json"> <!-- Manifest para PWA -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,100 +14,215 @@
             background-color: #f8f8f8;
         }
         header {
-            background-color: #007bff;
+            background-color: #000; /* Preto */
             color: white;
-            padding: 10px 20px;
+            padding: 20px;
             text-align: center;
         }
-        .container {
-            padding: 20px;
+        .logo {
+            cursor: pointer;
         }
-        .category {
+        .search-container {
+            text-align: center;
+            margin: 20px auto;
+        }
+        .search-box {
             margin-bottom: 20px;
+        }
+        .search-box input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 300px; /* Largura do campo de busca */
+            margin-right: 10px;
+            box-shadow: none; /* Remove a sombra */
+            outline: none; /* Remove o contorno */
+        }
+        .search-box button {
+            background-color: white; /* Botão branco */
+            color: #000; /* Texto preto */
+            border: 1px solid #000; /* Borda preta */
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .search-box button:hover {
+            background-color: #000; /* Preto ao passar o mouse */
+            color: white; /* Texto branco ao passar o mouse */
+        }
+        .products {
+            margin: 20px auto;
+            display: grid; /* Ativa o layout de grid */
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Define colunas responsivas */
+            gap: 20px; /* Espaçamento entre os itens */
+            max-width: 1200px; /* Largura máxima da grid */
         }
         .product {
             border: 1px solid #ddd;
             border-radius: 5px;
             padding: 10px;
-            margin: 10px;
             background-color: white;
             text-align: center;
+            transition: box-shadow 0.3s; /* Efeito de sombra ao passar o mouse */
+        }
+        .product:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra ao passar o mouse */
         }
         .product img {
             max-width: 100%;
             height: auto;
         }
-        .search-box {
-            margin-bottom: 20px;
+        .buy-button {
+            display: inline-block;
+            background-color: #000; /* Preto */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none; /* Remove o sublinhado */
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        .buy-button:hover {
+            background-color: #444; /* Cinza escuro ao passar o mouse */
+        }
+        .carousel {
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            max-width: 100%; /* Largura máxima do carrossel */
+            margin: 20px auto;
+        }
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .carousel-item {
+            min-width: 200px; /* Largura mínima de cada item do carrossel */
+            margin-right: 10px; /* Espaço entre os itens */
+        }
+        .carousel button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .carousel .prev {
+            left: 10px;
+        }
+        .carousel .next {
+            right: 10px;
+        }
+        footer {
+            background-color: #000; /* Preto */
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        .countdown {
+            text-align: center;
+            font-size: 18px;
+            margin: 10px 0;
+            color: #000; /* Preto */
+        }
+        .offer-title {
+            text-align: center;
+            font-size: 24px;
+            margin: 20px 0;
+            color: #000; /* Preto */
         }
     </style>
 </head>
 <body>
     <header>
+        <img src="https://beemote.online/assets/images/logo-beemote-png-96x96.webp" alt="Logo Beemote" class="logo" onclick="showCarousel()">
         <h1>Beemote Store</h1>
-    </header>
-    <div class="container">
-        <div class="search-box">
-            <input type="text" id="search" placeholder="Buscar produtos...">
-            <button onclick="searchProducts()">Buscar</button>
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="search" placeholder="Buscar produtos...">
+                <button onclick="searchProducts()">Buscar</button>
+            </div>
         </div>
-        <div id="categories"></div>
+    </header>
+    
+    <!-- Título e Contagem Regressiva -->
+    <div class="offer-title">Ofertas da Hora</div>
+    <div class="countdown" id="countdown"></div>
+
+    <!-- Produtos encontrados -->
+    <div id="products" class="products"></div>
+
+    <!-- Carrossel de Ofertas da Hora -->
+    <div class="carousel">
+        <button class="prev" onclick="moveCarousel(-1)">&#10094;</button>
+        <div id="carousel-container" class="carousel-container"></div>
+        <button class="next" onclick="moveCarousel(1)">&#10095;</button>
     </div>
+    
+    <footer>
+        <p>&copy; 2024 Beemote Store. Todos os direitos reservados.</p>
+    </footer>
 
     <script>
         const appToken = '16874466809043c9fab25';
         const sourceId = '36043605';
+        let currentIndex = 0;
+        const itemsToShow = 3; // Número de itens a serem mostrados no carrossel
+        let countdownInterval;
 
-        // Função para buscar categorias
-        async function fetchCategories() {
-            const response = await fetch(`https://api.lomadee.com/v3/${appToken}/category/_all?sourceId=${sourceId}`);
+        // Função para buscar produtos para o carrossel
+        async function fetchCarouselProducts() {
+            const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=oferta`);
             const data = await response.json();
-            displayCategories(data.categories);
+            displayCarouselProducts(data.offers);
         }
 
-        // Função para exibir categorias
-        function displayCategories(categories) {
-            const categoriesDiv = document.getElementById('categories');
-            categoriesDiv.innerHTML = '';
-            categories.forEach(category => {
-                const categoryDiv = document.createElement('div');
-                categoryDiv.className = 'category';
-                categoryDiv.innerHTML = `<h2>${category.name}</h2>`;
-                categoryDiv.onclick = () => fetchProducts(category.id);
-                categoriesDiv.appendChild(categoryDiv);
+        // Função para exibir produtos no carrossel
+        function displayCarouselProducts(offers) {
+            const carouselContainer = document.getElementById('carousel-container');
+            carouselContainer.innerHTML = ''; // Limpa o carrossel existente
+            
+            offers.slice(0, 10).forEach(offer => { // Limitar a 10 ofertas
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'carousel-item';
+                itemDiv.innerHTML = `
+                    <div class="product">
+                        <img src="${offer.thumbnail}" alt="Imagem do produto ${offer.name}">
+                        <h3>${offer.name}</h3>
+                        <p>Preço: R$${offer.price}</p>
+                        <a class="buy-button" href="${offer.link}" target="_blank">Comprar</a>
+                    </div>
+                `;
+                carouselContainer.appendChild(itemDiv);
             });
         }
 
-        // Função para buscar produtos da categoria
-        async function fetchProducts(categoryId) {
-            const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_category/${categoryId}?sourceId=${sourceId}`);
-            const data = await response.json();
-            displayProducts(data.offers);
-        }
+        // Função para mover o carrossel
+        function moveCarousel(direction) {
+            const carouselContainer = document.getElementById('carousel-container');
+            const totalItems = carouselContainer.children.length;
+            currentIndex += direction;
 
-        // Função para exibir produtos
-        function displayProducts(offers) {
-            const categoriesDiv = document.getElementById('categories');
-            categoriesDiv.innerHTML = '';
-
-            if (offers && offers.length > 0) {
-                offers.forEach(offer => {
-                    const productDiv = document.createElement('div');
-                    productDiv.className = 'product';
-                    productDiv.innerHTML = `
-                        <img src="${offer.thumbnail}" alt="${offer.name}">
-                        <h3>${offer.name}</h3>
-                        <p>Preço: R$${offer.price}</p>
-                        <a href="${offer.link}" target="_blank">Comprar</a>
-                    `;
-                    categoriesDiv.appendChild(productDiv);
-                });
-            } else {
-                categoriesDiv.innerHTML = '<p>Nenhum produto encontrado.</p>';
+            if (currentIndex < 0) {
+                currentIndex = totalItems - itemsToShow; // Volta para o final
+            } else if (currentIndex >= totalItems) {
+                currentIndex = 0; // Volta para o início
             }
+
+            const offset = -currentIndex * (carouselContainer.children[0].offsetWidth + 10); // 10 é a margem
+            carouselContainer.style.transform = `translateX(${offset}px)`;
         }
 
-        // Função para buscar produtos por palavra-chave
+        // Função para buscar produtos na API
         async function searchProducts() {
             const query = document.getElementById('search').value;
             const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=${query}`);
@@ -114,12 +230,71 @@
             displayProducts(data.offers);
         }
 
-        // Inicializar a busca de categorias
-        fetchCategories();
+        // Função para exibir produtos encontrados em grid
+        function displayProducts(offers) {
+            const productsContainer = document.getElementById('products');
+            productsContainer.innerHTML = ''; // Limpa os produtos existentes
+            
+            if (offers.length === 0) {
+                productsContainer.innerHTML = '<p>Nenhum produto encontrado.</p>';
+                return;
+            }
 
-        // Endpoint para receber callback de vendas (implementação no servidor)
-        // Por exemplo: /postback?codigoTransacao={transaction}&anuncianteId={adv}
-        // Certifique-se de configurar este endpoint no seu servidor para processar as notificações de venda
+            offers.forEach(offer => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product';
+                productDiv.innerHTML = `
+                    <img src="${offer.thumbnail}" alt="Imagem do produto ${offer.name}">
+                    <h3>${offer.name}</h3>
+                    <p>Preço: R$${offer.price}</p>
+                    <a class="buy-button" href="${offer.link}" target="_blank">Comprar</a>
+                `;
+                productsContainer.appendChild(productDiv);
+            });
+        }
+
+        // Função para mostrar o carrossel
+        function showCarousel() {
+            document.querySelector('.carousel').style.display = 'flex';
+        }
+
+        // Função para iniciar a contagem regressiva
+        function startCountdown(duration) {
+            let timer = duration, minutes, seconds;
+            countdownInterval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                document.getElementById('countdown').textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('countdown').textContent = "Tempo esgotado!";
+                }
+            }, 1000);
+        }
+
+        // Inicia o fetch e a contagem regressiva ao carregar a página
+        window.onload = function() {
+            fetchCarouselProducts();
+            startCountdown(300); // 5 minutos de contagem regressiva
+        };
+    </script>
+
+    <script>
+        // Verifica se o navegador suporta Service Workers
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js')
+                .then(function(registration) {
+                    console.log('Service Worker registrado com sucesso:', registration);
+                })
+                .catch(function(error) {
+                    console.error('Erro ao registrar o Service Worker:', error);
+                });
+            });
+        }
     </script>
 </body>
 </html>
