@@ -1,46 +1,44 @@
-const CACHE_NAME = 'beemote-store-cache-v1';
+const CACHE_NAME = 'beemote-cache-v1';
 const urlsToCache = [
-    '/',
-    '/index.html',
-    '/styles.css',
-    'https://beemote.online/assets/images/logo-beemote-png-96x96.webp',
-    // Adicione outros arquivos estáticos que você deseja armazenar em cache
+  '/',
+  '/index.html',
+  '/manifest.json',
+  'https://beemote.online/assets/images/logo-beemote-png-96x96.webp',
+  // Outros recursos que deseja armazenar em cache
 ];
 
-// Instala o Service Worker e faz cache dos arquivos
-self.addEventListener('install', function(event) {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(function(cache) {
-                console.log('Cache aberto');
-                return cache.addAll(urlsToCache);
-            })
-    );
+// Instalando o service worker
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        return cache.addAll(urlsToCache);
+      })
+  );
 });
 
-// Recupera arquivos do cache
-self.addEventListener('fetch', function(event) {
-    event.respondWith(
-        caches.match(event.request)
-            .then(function(response) {
-                // Retorna a resposta do cache ou faz a solicitação de rede
-                return response || fetch(event.request);
-            })
-    );
+// Intercepta as requisições e responde com os recursos em cache
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        return response || fetch(event.request);
+      })
+  );
 });
 
-// Atualiza o cache quando o Service Worker é ativado
-self.addEventListener('activate', function(event) {
-    const cacheWhitelist = [CACHE_NAME];
-    event.waitUntil(
-        caches.keys().then(function(cacheNames) {
-            return Promise.all(
-                cacheNames.map(function(cacheName) {
-                    if (cacheWhitelist.indexOf(cacheName) === -1) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
+// Atualiza o service worker e remove caches antigos
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (!cacheWhitelist.includes(cacheName)) {
+            return caches.delete(cacheName);
+          }
         })
-    );
+      );
+    })
+  );
 });
