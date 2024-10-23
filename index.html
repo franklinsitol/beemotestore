@@ -144,11 +144,11 @@
 </head>
 <body>
     <header>
-        <img src="https://beemote.online/assets/images/logo-beemote-png-96x96.webp" alt="Logo Beemote" class="logo" onclick="showCarousel()">
+        <img src="https://beemote.online/assets/images/logo-beemote-png-96x96.webp" alt="Logo Beemote" class="logo" onclick="resetSearch()">
         <h1>Beemote Store</h1>
         <div class="search-container">
             <div class="search-box">
-                <input type="text" id="search" placeholder="Buscar produtos...">
+                <input type="text" id="search" placeholder="Buscar produtos..." onkeypress="checkEnter(event)">
                 <button onclick="searchProducts()">Buscar</button>
             </div>
         </div>
@@ -253,9 +253,18 @@
             });
         }
 
-        // Função para mostrar o carrossel
-        function showCarousel() {
-            document.querySelector('.carousel').style.display = 'flex';
+        // Função para limpar a busca ao clicar no logo
+        function resetSearch() {
+            document.getElementById('search').value = '';
+            document.getElementById('products').innerHTML = ''; // Limpa produtos encontrados
+            fetchCarouselProducts(); // Recarrega o carrossel
+        }
+
+        // Função para verificar se a tecla pressionada é Enter
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                searchProducts(); // Chama a função de busca
+            }
         }
 
         // Função para iniciar a contagem regressiva
