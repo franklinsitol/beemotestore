@@ -3,8 +3,8 @@
     "short_name": "Beemote",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#f8f8f8",
-    "theme_color": "#000000",
+    "background_color": "#000000", // Cor de fundo preta
+    "theme_color": "#000000", // Cor do tema preta
     "icons": [
         {
             "src": "https://beemote.online/assets/images/logo-beemote-png-96x96.webp",
