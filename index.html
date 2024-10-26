@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beemote Store</title>
+    <title>ShopMercado</title>
     <link rel="icon" href="https://beemote.online/assets/images/logo-beemote-png-96x96.webp" type="image/png">
     <link rel="manifest" href="/manifest.json"> <!-- Manifest para PWA -->
     <style>
@@ -140,12 +140,23 @@
             margin: 20px 0;
             color: #000; /* Preto */
         }
+        .partners-carousel {
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+        .partner {
+            text-align: center;
+            padding: 10px;
+        }
+        .partner img {
+            max-width: 100px; /* Tamanho do logo da loja */
+        }
     </style>
 </head>
 <body>
     <header>
         <img src="https://beemote.online/assets/images/logo-beemote-png-96x96.webp" alt="Logo Beemote" class="logo" onclick="resetSearch()">
-        <h1>Beemote Store</h1>
+        <h1>ShopMercado</h1>
         <div class="search-container">
             <div class="search-box">
                 <input type="text" id="search" placeholder="Buscar produtos..." onkeypress="checkEnter(event)">
@@ -170,30 +181,37 @@
 
     <!-- Carrossel de Lojas Parceiras -->
     <div class="offer-title">Lojas Parceiras</div>
-    <div class="carousel">
-        <button class="prev" onclick="movePartnerCarousel(-1)">&#10094;</button>
-        <div id="partner-carousel-container" class="carousel-container"></div>
-        <button class="next" onclick="movePartnerCarousel(1)">&#10095;</button>
+    <div class="partners-carousel" id="partners-carousel">
+        <div class="carousel-container" id="partners-carousel-container"></div>
+        <button class="prev" onclick="movePartnersCarousel(-1)">&#10094;</button>
+        <button class="next" onclick="movePartnersCarousel(1)">&#10095;</button>
     </div>
-    
+
     <footer>
-        <p>&copy; 2024 Beemote Store. Todos os direitos reservados.</p>
+        <p>&copy; 2024 ShopMercado. Todos os direitos reservados.</p>
     </footer>
 
     <script>
         const appToken = '16874466809043c9fab25';
         const sourceId = '36043605';
         let currentIndex = 0;
-        let partnerIndex = 0;
+        let currentPartnersIndex = 0; // Índice do carrossel de lojas parceiras
         const itemsToShow = 3; // Número de itens a serem mostrados no carrossel
-        const partnerItemsToShow = 3; // Número de itens para o carrossel de parceiros
+        const partnersToShow = 3; // Número de parceiros a serem mostrados no carrossel de parceiros
         let countdownInterval;
 
-        // Função para buscar ofertas da hora
-        async function fetchOffers() {
+        // Função para buscar produtos para o carrossel de ofertas
+        async function fetchCarouselProducts() {
             const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=oferta`);
             const data = await response.json();
             displayCarouselProducts(data.offers);
+        }
+
+        // Função para buscar lojas parceiras
+        async function fetchPartners() {
+            const response = await fetch(`https://api.lomadee.com/v3/${appToken}/store/_all`);
+            const data = await response.json();
+            displayPartners(data.stores);
         }
 
         // Função para exibir produtos no carrossel de ofertas
@@ -216,23 +234,24 @@
             });
         }
 
-        // Função para mover o carrossel de ofertas
-        function moveCarousel(direction) {
-            const carouselContainer = document.getElementById('carousel-container');
-            const totalItems = carouselContainer.children.length;
-            currentIndex += direction;
-
-            if (currentIndex < 0) {
-                currentIndex = totalItems - itemsToShow; // Volta para o final
-            } else if (currentIndex >= totalItems) {
-                currentIndex = 0; // Volta para o início
-            }
-
-            const offset = -currentIndex * (carouselContainer.children[0].offsetWidth + 10); // 10 é a margem
-            carouselContainer.style.transform = `translateX(${offset}px)`;
+        // Função para exibir lojas parceiras no carrossel
+        function displayPartners(partners) {
+            const partnersCarouselContainer = document.getElementById('partners-carousel-container');
+            partnersCarouselContainer.innerHTML = ''; // Limpa o carrossel de parceiros existente
+            
+            partners.slice(0, 10).forEach(partner => { // Limitar a 10 parceiros
+                const partnerDiv = document.createElement('div');
+                partnerDiv.className = 'partner';
+                partnerDiv.innerHTML = `
+                    <a href="${partner.link}" target="_blank">
+                        <img src="${partner.logo}" alt="${partner.name}">
+                    </a>
+                `;
+                partnersCarouselContainer.appendChild(partnerDiv);
+            });
         }
 
-        // Função para buscar produtos da Shopee e Mercado Livre
+        // Função para buscar produtos
         async function searchProducts() {
             const searchTerm = document.getElementById('search').value;
             const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=${encodeURIComponent(searchTerm)}`);
@@ -240,10 +259,10 @@
             displayProducts(data.offers);
         }
 
-        // Função para exibir os produtos encontrados
+        // Função para exibir produtos encontrados
         function displayProducts(offers) {
             const productsDiv = document.getElementById('products');
-            productsDiv.innerHTML = ''; // Limpa produtos existentes
+            productsDiv.innerHTML = ''; // Limpa os produtos existentes
             
             offers.forEach(offer => {
                 const productDiv = document.createElement('div');
@@ -258,84 +277,66 @@
             });
         }
 
-        // Função para lidar com a tecla Enter no campo de busca
+        // Função para mover o carrossel de ofertas
+        function moveCarousel(direction) {
+            const carouselContainer = document.getElementById('carousel-container');
+            const totalItems = carouselContainer.childElementCount;
+            const itemsToMove = direction === 1 ? -1 : 1; // Direção inversa para rolar corretamente
+            currentIndex = (currentIndex + itemsToMove + totalItems) % totalItems;
+            const offset = currentIndex * 210; // 200px de largura do item + 10px de margem
+            carouselContainer.style.transform = `translateX(${offset}px)`;
+        }
+
+        // Função para mover o carrossel de parceiros
+        function movePartnersCarousel(direction) {
+            const partnersCarouselContainer = document.getElementById('partners-carousel-container');
+            const totalPartners = partnersCarouselContainer.childElementCount;
+            const partnersToMove = direction === 1 ? -1 : 1; // Direção inversa para rolar corretamente
+            currentPartnersIndex = (currentPartnersIndex + partnersToMove + totalPartners) % totalPartners;
+            const offset = currentPartnersIndex * 210; // 200px de largura do item + 10px de margem
+            partnersCarouselContainer.style.transform = `translateX(${offset}px)`;
+        }
+
+        // Função para verificar se a tecla Enter foi pressionada
         function checkEnter(event) {
             if (event.key === 'Enter') {
                 searchProducts();
             }
         }
 
-        // Função para mover o carrossel de lojas parceiras
-        async function fetchPartners() {
-            // Exemplo de parceiros
-            const partners = [
-                { name: 'Shopee', logo: 'https://shopee.com.br/logo.png', link: 'https://shopee.com.br' },
-                { name: 'Mercado Livre', logo: 'https://mercadolivre.com.br/logo.png', link: 'https://mercadolivre.com.br' }
-            ];
-            displayPartnerCarousel(partners);
+        // Função para resetar a busca
+        function resetSearch() {
+            document.getElementById('search').value = '';
+            document.getElementById('products').innerHTML = '';
         }
 
-        // Função para exibir o carrossel de parceiros
-        function displayPartnerCarousel(partners) {
-            const partnerCarouselContainer = document.getElementById('partner-carousel-container');
-            partnerCarouselContainer.innerHTML = ''; // Limpa o carrossel existente
+        // Função para iniciar a contagem regressiva e buscar dados
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            let timeLeft = 3600; // 1 hora em segundos
 
-            partners.forEach(partner => {
-                const partnerItem = document.createElement('div');
-                partnerItem.className = 'carousel-item';
-                partnerItem.innerHTML = `
-                    <a href="${partner.link}" target="_blank">
-                        <img src="${partner.logo}" alt="${partner.name}" style="max-width: 100%; height: auto;">
-                    </a>
-                `;
-                partnerCarouselContainer.appendChild(partnerItem);
-            });
-        }
-
-        // Função para mover o carrossel de lojas parceiras
-        function movePartnerCarousel(direction) {
-            const partnerCarouselContainer = document.getElementById('partner-carousel-container');
-            const totalItems = partnerCarouselContainer.children.length;
-            partnerIndex += direction;
-
-            if (partnerIndex < 0) {
-                partnerIndex = totalItems - partnerItemsToShow; // Volta para o final
-            } else if (partnerIndex >= totalItems) {
-                partnerIndex = 0; // Volta para o início
-            }
-
-            const offset = -partnerIndex * (partnerCarouselContainer.children[0].offsetWidth + 10); // 10 é a margem
-            partnerCarouselContainer.style.transform = `translateX(${offset}px)`;
-        }
-
-        // Função para configurar a contagem regressiva
-        function setupCountdown() {
-            let duration = 3600; // 1 hora em segundos
             countdownInterval = setInterval(() => {
-                const minutes = Math.floor((duration % 3600) / 60);
-                const seconds = duration % 60;
-                document.getElementById('countdown').innerText = `${minutes}m ${seconds}s`;
-                duration--;
-
-                if (duration < 0) {
+                if (timeLeft <= 0) {
                     clearInterval(countdownInterval);
-                    fetchOffers(); // Recarrega as ofertas
-                    setupCountdown(); // Reinicia a contagem regressiva
+                    countdownElement.innerHTML = 'As ofertas foram atualizadas!';
+                    fetchCarouselProducts();
+                    fetchPartners();
+                    timeLeft = 3600; // Reinicia o tempo
+                } else {
+                    const hours = Math.floor(timeLeft / 3600);
+                    const minutes = Math.floor((timeLeft % 3600) / 60);
+                    const seconds = timeLeft % 60;
+                    countdownElement.innerHTML = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    timeLeft--;
                 }
             }, 1000);
         }
 
-        // Função para reiniciar a busca
-        function resetSearch() {
-            document.getElementById('search').value = '';
-            searchProducts();
-        }
-
-        // Inicializa a aplicação
-        window.onload = async () => {
-            await fetchOffers();
-            await fetchPartners();
-            setupCountdown();
+        // Inicia a contagem regressiva e busca os dados na inicialização
+        window.onload = () => {
+            fetchCarouselProducts();
+            fetchPartners();
+            startCountdown();
         };
     </script>
 </body>
