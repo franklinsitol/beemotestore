@@ -220,9 +220,18 @@
 
         // Função para buscar produtos para o carrossel de ofertas da hora
         async function fetchCarouselProducts() {
-            const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=oferta`);
-            const data = await response.json();
-            displayCarouselProducts(data.offers);
+            try {
+                const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=oferta`);
+                const data = await response.json();
+                console.log(data); // Debug
+                if (data.offers) {
+                    displayCarouselProducts(data.offers);
+                } else {
+                    console.error("Ofertas não encontradas.");
+                }
+            } catch (error) {
+                console.error("Erro ao buscar ofertas: ", error);
+            }
         }
 
         function displayCarouselProducts(offers) {
@@ -246,63 +255,115 @@
 
         // Função para buscar lojas parceiras
         async function fetchPartnerStores() {
-            const response = await fetch(`https://api.lomadee.com/v3/${appToken}/store/_all?sourceId=${sourceId}`);
-            const data = await response.json();
-            displayPartnerStores(data.stores);
+            try {
+                const response = await fetch(`https://api.lomadee.com/v3/${appToken}/store/_all`);
+                const data = await response.json();
+                console.log(data); // Debug
+                if (data.stores) {
+                    displayPartnerStores(data.stores);
+                } else {
+                    console.error("Lojas não encontradas.");
+                }
+            } catch (error) {
+                console.error("Erro ao buscar lojas: ", error);
+            }
         }
 
         function displayPartnerStores(stores) {
             const partnersCarouselContainer = document.getElementById('partners-carousel-container');
-            partnersCarouselContainer.innerHTML = ''; 
-
-            stores.slice(0, 10).forEach(store => { 
-                const storeDiv = document.createElement('div');
-                storeDiv.className = 'partner-card';
-                storeDiv.innerHTML = `
-                    <img src="${store.thumbnail}" alt="Logo da loja ${store.name}">
+            partnersCarouselContainer.innerHTML = '';
+            
+            stores.forEach(store => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'partner-card';
+                cardDiv.innerHTML = `
+                    <img src="${store.logo}" alt="${store.name}">
                     <h3>${store.name}</h3>
                 `;
-                partnersCarouselContainer.appendChild(storeDiv);
+                partnersCarouselContainer.appendChild(cardDiv);
             });
         }
 
-        // Função de movimentação do carrossel
-        function moveCarousel(direction) {
-            const carouselContainer = document.querySelector('.carousel-container');
-            const totalItems = carouselContainer.children.length;
+        // Função para buscar produtos com base na pesquisa
+        async function searchProducts() {
+            const keyword = document.getElementById('search').value;
+            if (!keyword) return;
+            try {
+                const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=${encodeURIComponent(keyword)}`);
+                const data = await response.json();
+                console.log(data); // Debug
+                displayProducts(data.offers);
+            } catch (error) {
+                console.error("Erro ao buscar produtos: ", error);
+            }
+        }
 
+        function displayProducts(offers) {
+            const productsContainer = document.getElementById('products');
+            productsContainer.innerHTML = '';
+            
+            if (offers.length === 0) {
+                productsContainer.innerHTML = '<p>Nenhum produto encontrado.</p>';
+                return;
+            }
+            
+            offers.forEach(offer => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product';
+                productDiv.innerHTML = `
+                    <img src="${offer.thumbnail}" alt="${offer.name}">
+                    <h3>${offer.name}</h3>
+                    <p>Preço: R$${offer.price}</p>
+                    <a class="buy-button" href="${offer.link}" target="_blank">Comprar</a>
+                `;
+                productsContainer.appendChild(productDiv);
+            });
+        }
+
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                searchProducts();
+            }
+        }
+
+        function resetSearch() {
+            document.getElementById('search').value = '';
+            document.getElementById('products').innerHTML = '';
+        }
+
+        function moveCarousel(direction) {
+            const carouselContainer = document.getElementById('carousel-container');
+            const items = carouselContainer.children;
             currentIndex += direction;
+
             if (currentIndex < 0) {
-                currentIndex = totalItems - itemsToShow;
-            } else if (currentIndex >= totalItems - itemsToShow) {
+                currentIndex = items.length - itemsToShow;
+            } else if (currentIndex >= items.length - itemsToShow + 1) {
                 currentIndex = 0;
             }
 
-            const offset = currentIndex * -210;
-            carouselContainer.style.transform = `translateX(${offset}px)`;
+            carouselContainer.style.transform = `translateX(-${currentIndex * (items[0].offsetWidth + 10)}px)`;
         }
 
-        // Função para contagem regressiva
+        // Função para iniciar a contagem regressiva
         function startCountdown() {
-            const countdownDate = new Date().getTime() + 3600000; 
-
+            let time = 3600; // 1 hora em segundos
             countdownInterval = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = countdownDate - now;
-
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                document.getElementById('countdown').innerHTML = `${minutes}m ${seconds}s`;
-
-                if (distance < 0) {
+                if (time <= 0) {
                     clearInterval(countdownInterval);
-                    document.getElementById('countdown').innerHTML = "Ofertas encerradas!";
+                    document.getElementById('countdown').textContent = 'Oferta expirada!';
+                    return;
                 }
+                const hours = Math.floor(time / 3600);
+                const minutes = Math.floor((time % 3600) / 60);
+                const seconds = time % 60;
+                document.getElementById('countdown').textContent = `Tempo restante: ${hours}h ${minutes}m ${seconds}s`;
+                time--;
             }, 1000);
         }
 
-        window.onload = function () {
+        // Chamada das funções ao carregar a página
+        window.onload = () => {
             fetchCarouselProducts();
             fetchPartnerStores();
             startCountdown();
