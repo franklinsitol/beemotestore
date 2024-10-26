@@ -33,30 +33,30 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            width: 300px;
+            width: 300px; /* Largura do campo de busca */
             margin-right: 10px;
-            box-shadow: none;
-            outline: none;
+            box-shadow: none; /* Remove a sombra */
+            outline: none; /* Remove o contorno */
         }
         .search-box button {
-            background-color: white;
-            color: #000;
-            border: 1px solid #000;
+            background-color: white; /* Botão branco */
+            color: #000; /* Texto preto */
+            border: 1px solid #000; /* Borda preta */
             border-radius: 5px;
             padding: 10px 15px;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
         }
         .search-box button:hover {
-            background-color: #000;
-            color: white;
+            background-color: #000; /* Preto ao passar o mouse */
+            color: white; /* Texto branco ao passar o mouse */
         }
         .products {
             margin: 20px auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
+            display: grid; /* Ativa o layout de grid */
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Define colunas responsivas */
+            gap: 20px; /* Espaçamento entre os itens */
+            max-width: 1200px; /* Largura máxima da grid */
         }
         .product {
             border: 1px solid #ddd;
@@ -64,10 +64,10 @@
             padding: 10px;
             background-color: white;
             text-align: center;
-            transition: box-shadow 0.3s;
+            transition: box-shadow 0.3s; /* Efeito de sombra ao passar o mouse */
         }
         .product:hover {
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra ao passar o mouse */
         }
         .product img {
             max-width: 100%;
@@ -75,23 +75,23 @@
         }
         .buy-button {
             display: inline-block;
-            background-color: #000;
+            background-color: #000; /* Preto */
             color: white;
             padding: 10px 15px;
             border: none;
             border-radius: 5px;
-            text-decoration: none;
+            text-decoration: none; /* Remove o sublinhado */
             margin-top: 10px;
             transition: background-color 0.3s;
         }
         .buy-button:hover {
-            background-color: #444;
+            background-color: #444; /* Cinza escuro ao passar o mouse */
         }
         .carousel {
             display: flex;
             overflow: hidden;
             position: relative;
-            max-width: 100%;
+            max-width: 100%; /* Largura máxima do carrossel */
             margin: 20px auto;
         }
         .carousel-container {
@@ -99,8 +99,8 @@
             transition: transform 0.5s ease;
         }
         .carousel-item {
-            min-width: 200px;
-            margin-right: 10px;
+            min-width: 200px; /* Largura mínima de cada item do carrossel */
+            margin-right: 10px; /* Espaço entre os itens */
         }
         .carousel button {
             position: absolute;
@@ -120,7 +120,7 @@
             right: 10px;
         }
         footer {
-            background-color: #000;
+            background-color: #000; /* Preto */
             color: white;
             text-align: center;
             padding: 10px;
@@ -132,46 +132,13 @@
             text-align: center;
             font-size: 18px;
             margin: 10px 0;
-            color: #000;
+            color: #000; /* Preto */
         }
         .offer-title {
             text-align: center;
             font-size: 24px;
             margin: 20px 0;
-            color: #000;
-        }
-        .partners-carousel {
-            margin: 20px auto;
-            text-align: center;
-        }
-        .partners-carousel h2 {
-            margin-bottom: 10px;
-            color: #000;
-        }
-        .partners-carousel .carousel-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        .partner-card {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            text-align: center;
-            transition: box-shadow 0.3s;
-        }
-        .partner-card img {
-            width: 50px;
-            height: auto;
-        }
-        .partner-card h3 {
-            margin-top: 10px;
-            font-size: 18px;
-            color: #000;
-        }
-        .partner-card:hover {
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            color: #000; /* Preto */
         }
     </style>
 </head>
@@ -202,9 +169,11 @@
     </div>
 
     <!-- Carrossel de Lojas Parceiras -->
-    <div class="partners-carousel">
-        <h2>Lojas Parceiras</h2>
-        <div class="carousel-container" id="partners-carousel-container"></div>
+    <div class="offer-title">Lojas Parceiras</div>
+    <div class="carousel">
+        <button class="prev" onclick="movePartnerCarousel(-1)">&#10094;</button>
+        <div id="partner-carousel-container" class="carousel-container"></div>
+        <button class="next" onclick="movePartnerCarousel(1)">&#10095;</button>
     </div>
     
     <footer>
@@ -215,30 +184,24 @@
         const appToken = '16874466809043c9fab25';
         const sourceId = '36043605';
         let currentIndex = 0;
-        const itemsToShow = 3; 
+        let partnerIndex = 0;
+        const itemsToShow = 3; // Número de itens a serem mostrados no carrossel
+        const partnerItemsToShow = 3; // Número de itens para o carrossel de parceiros
         let countdownInterval;
 
-        // Função para buscar produtos para o carrossel de ofertas da hora
-        async function fetchCarouselProducts() {
-            try {
-                const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=oferta`);
-                const data = await response.json();
-                console.log(data); // Debug
-                if (data.offers) {
-                    displayCarouselProducts(data.offers);
-                } else {
-                    console.error("Ofertas não encontradas.");
-                }
-            } catch (error) {
-                console.error("Erro ao buscar ofertas: ", error);
-            }
+        // Função para buscar ofertas da hora
+        async function fetchOffers() {
+            const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=oferta`);
+            const data = await response.json();
+            displayCarouselProducts(data.offers);
         }
 
+        // Função para exibir produtos no carrossel de ofertas
         function displayCarouselProducts(offers) {
             const carouselContainer = document.getElementById('carousel-container');
-            carouselContainer.innerHTML = ''; 
+            carouselContainer.innerHTML = ''; // Limpa o carrossel existente
             
-            offers.slice(0, 10).forEach(offer => { 
+            offers.slice(0, 10).forEach(offer => { // Limitar a 10 ofertas
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'carousel-item';
                 itemDiv.innerHTML = `
@@ -253,120 +216,126 @@
             });
         }
 
-        // Função para buscar lojas parceiras
-        async function fetchPartnerStores() {
-            try {
-                const response = await fetch(`https://api.lomadee.com/v3/${appToken}/store/_all`);
-                const data = await response.json();
-                console.log(data); // Debug
-                if (data.stores) {
-                    displayPartnerStores(data.stores);
-                } else {
-                    console.error("Lojas não encontradas.");
-                }
-            } catch (error) {
-                console.error("Erro ao buscar lojas: ", error);
+        // Função para mover o carrossel de ofertas
+        function moveCarousel(direction) {
+            const carouselContainer = document.getElementById('carousel-container');
+            const totalItems = carouselContainer.children.length;
+            currentIndex += direction;
+
+            if (currentIndex < 0) {
+                currentIndex = totalItems - itemsToShow; // Volta para o final
+            } else if (currentIndex >= totalItems) {
+                currentIndex = 0; // Volta para o início
             }
+
+            const offset = -currentIndex * (carouselContainer.children[0].offsetWidth + 10); // 10 é a margem
+            carouselContainer.style.transform = `translateX(${offset}px)`;
         }
 
-        function displayPartnerStores(stores) {
-            const partnersCarouselContainer = document.getElementById('partners-carousel-container');
-            partnersCarouselContainer.innerHTML = '';
-            
-            stores.forEach(store => {
-                const cardDiv = document.createElement('div');
-                cardDiv.className = 'partner-card';
-                cardDiv.innerHTML = `
-                    <img src="${store.logo}" alt="${store.name}">
-                    <h3>${store.name}</h3>
-                `;
-                partnersCarouselContainer.appendChild(cardDiv);
-            });
-        }
-
-        // Função para buscar produtos com base na pesquisa
+        // Função para buscar produtos da Shopee e Mercado Livre
         async function searchProducts() {
-            const keyword = document.getElementById('search').value;
-            if (!keyword) return;
-            try {
-                const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=${encodeURIComponent(keyword)}`);
-                const data = await response.json();
-                console.log(data); // Debug
-                displayProducts(data.offers);
-            } catch (error) {
-                console.error("Erro ao buscar produtos: ", error);
-            }
+            const searchTerm = document.getElementById('search').value;
+            const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=${encodeURIComponent(searchTerm)}`);
+            const data = await response.json();
+            displayProducts(data.offers);
         }
 
+        // Função para exibir os produtos encontrados
         function displayProducts(offers) {
-            const productsContainer = document.getElementById('products');
-            productsContainer.innerHTML = '';
-            
-            if (offers.length === 0) {
-                productsContainer.innerHTML = '<p>Nenhum produto encontrado.</p>';
-                return;
-            }
+            const productsDiv = document.getElementById('products');
+            productsDiv.innerHTML = ''; // Limpa produtos existentes
             
             offers.forEach(offer => {
                 const productDiv = document.createElement('div');
                 productDiv.className = 'product';
                 productDiv.innerHTML = `
-                    <img src="${offer.thumbnail}" alt="${offer.name}">
+                    <img src="${offer.thumbnail}" alt="Imagem do produto ${offer.name}">
                     <h3>${offer.name}</h3>
                     <p>Preço: R$${offer.price}</p>
                     <a class="buy-button" href="${offer.link}" target="_blank">Comprar</a>
                 `;
-                productsContainer.appendChild(productDiv);
+                productsDiv.appendChild(productDiv);
             });
         }
 
+        // Função para lidar com a tecla Enter no campo de busca
         function checkEnter(event) {
             if (event.key === 'Enter') {
                 searchProducts();
             }
         }
 
-        function resetSearch() {
-            document.getElementById('search').value = '';
-            document.getElementById('products').innerHTML = '';
+        // Função para mover o carrossel de lojas parceiras
+        async function fetchPartners() {
+            // Exemplo de parceiros
+            const partners = [
+                { name: 'Shopee', logo: 'https://shopee.com.br/logo.png', link: 'https://shopee.com.br' },
+                { name: 'Mercado Livre', logo: 'https://mercadolivre.com.br/logo.png', link: 'https://mercadolivre.com.br' }
+            ];
+            displayPartnerCarousel(partners);
         }
 
-        function moveCarousel(direction) {
-            const carouselContainer = document.getElementById('carousel-container');
-            const items = carouselContainer.children;
-            currentIndex += direction;
+        // Função para exibir o carrossel de parceiros
+        function displayPartnerCarousel(partners) {
+            const partnerCarouselContainer = document.getElementById('partner-carousel-container');
+            partnerCarouselContainer.innerHTML = ''; // Limpa o carrossel existente
 
-            if (currentIndex < 0) {
-                currentIndex = items.length - itemsToShow;
-            } else if (currentIndex >= items.length - itemsToShow + 1) {
-                currentIndex = 0;
+            partners.forEach(partner => {
+                const partnerItem = document.createElement('div');
+                partnerItem.className = 'carousel-item';
+                partnerItem.innerHTML = `
+                    <a href="${partner.link}" target="_blank">
+                        <img src="${partner.logo}" alt="${partner.name}" style="max-width: 100%; height: auto;">
+                    </a>
+                `;
+                partnerCarouselContainer.appendChild(partnerItem);
+            });
+        }
+
+        // Função para mover o carrossel de lojas parceiras
+        function movePartnerCarousel(direction) {
+            const partnerCarouselContainer = document.getElementById('partner-carousel-container');
+            const totalItems = partnerCarouselContainer.children.length;
+            partnerIndex += direction;
+
+            if (partnerIndex < 0) {
+                partnerIndex = totalItems - partnerItemsToShow; // Volta para o final
+            } else if (partnerIndex >= totalItems) {
+                partnerIndex = 0; // Volta para o início
             }
 
-            carouselContainer.style.transform = `translateX(-${currentIndex * (items[0].offsetWidth + 10)}px)`;
+            const offset = -partnerIndex * (partnerCarouselContainer.children[0].offsetWidth + 10); // 10 é a margem
+            partnerCarouselContainer.style.transform = `translateX(${offset}px)`;
         }
 
-        // Função para iniciar a contagem regressiva
-        function startCountdown() {
-            let time = 3600; // 1 hora em segundos
+        // Função para configurar a contagem regressiva
+        function setupCountdown() {
+            let duration = 3600; // 1 hora em segundos
             countdownInterval = setInterval(() => {
-                if (time <= 0) {
+                const minutes = Math.floor((duration % 3600) / 60);
+                const seconds = duration % 60;
+                document.getElementById('countdown').innerText = `${minutes}m ${seconds}s`;
+                duration--;
+
+                if (duration < 0) {
                     clearInterval(countdownInterval);
-                    document.getElementById('countdown').textContent = 'Oferta expirada!';
-                    return;
+                    fetchOffers(); // Recarrega as ofertas
+                    setupCountdown(); // Reinicia a contagem regressiva
                 }
-                const hours = Math.floor(time / 3600);
-                const minutes = Math.floor((time % 3600) / 60);
-                const seconds = time % 60;
-                document.getElementById('countdown').textContent = `Tempo restante: ${hours}h ${minutes}m ${seconds}s`;
-                time--;
             }, 1000);
         }
 
-        // Chamada das funções ao carregar a página
-        window.onload = () => {
-            fetchCarouselProducts();
-            fetchPartnerStores();
-            startCountdown();
+        // Função para reiniciar a busca
+        function resetSearch() {
+            document.getElementById('search').value = '';
+            searchProducts();
+        }
+
+        // Inicializa a aplicação
+        window.onload = async () => {
+            await fetchOffers();
+            await fetchPartners();
+            setupCountdown();
         };
     </script>
 </body>
