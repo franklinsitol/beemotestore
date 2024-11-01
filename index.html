@@ -189,7 +189,7 @@
 
         // Função para buscar produtos para o carrossel
         async function fetchCarouselProducts() {
-            const response = await fetch(https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=oferta);
+            const response = await fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=oferta`);
             const data = await response.json();
             displayCarouselProducts(data.offers);
         }
@@ -202,21 +202,21 @@
             offers.slice(0, 10).forEach(offer => { // Limitar a 10 ofertas
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'carousel-item';
-                itemDiv.innerHTML = 
+                itemDiv.innerHTML = `
                     <div class="product">
                         <img src="${offer.thumbnail}" alt="Imagem do produto ${offer.name}">
                         <h3>${offer.name}</h3>
                         <p>Preço: R$${offer.price}</p>
                         <a class="buy-button" href="${offer.link}" target="_blank">Comprar</a>
                     </div>
-                ;
+                `;
                 carouselContainer.appendChild(itemDiv);
             });
         }
 
         // Função para buscar lojas parceiras
         async function fetchPartnerStores() {
-            const response = await fetch(https://api.lomadee.com/v3/${appToken}/store/_all?sourceId=${sourceId});
+            const response = await fetch(`https://api.lomadee.com/v3/${appToken}/store/_all?sourceId=${sourceId}`);
             const data = await response.json();
             displayPartnerStores(data.stores);
         }
@@ -229,13 +229,13 @@
             stores.slice(0, 10).forEach(store => { // Limitar a 10 lojas
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'carousel-item';
-                itemDiv.innerHTML = 
+                itemDiv.innerHTML = `
                     <div class="product">
                         <img src="${store.thumbnail}" alt="Imagem da loja ${store.name}">
                         <h3>${store.name}</h3>
                         <a class="buy-button" href="${store.link}" target="_blank">Visitar Loja</a>
                     </div>
-                ;
+                `;
                 partnerCarouselContainer.appendChild(itemDiv);
             });
         }
@@ -253,7 +253,7 @@
             }
 
             // Atualizar a posição do carrossel
-            carouselContainer.style.transform = translateX(-${currentIndex * (100 / itemsToShow)}%);
+            carouselContainer.style.transform = `translateX(-${currentIndex * (100 / itemsToShow)}%)`;
         }
 
         // Função para mover o carrossel de lojas
@@ -269,7 +269,7 @@
             }
 
             // Atualizar a posição do carrossel
-            partnerCarouselContainer.style.transform = translateX(-${currentIndex * (100 / itemsToShow)}%);
+            partnerCarouselContainer.style.transform = `translateX(-${currentIndex * (100 / itemsToShow)}%)`;
         }
 
         // Função de contagem regressiva
@@ -286,7 +286,7 @@
 
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
-                countdownElement.innerHTML = Tempo restante: ${minutes}m ${seconds}s;
+                countdownElement.innerHTML = `Tempo restante: ${minutes}m ${seconds}s`;
                 timeLeft--;
             }, 1000);
         }
@@ -304,18 +304,18 @@
             const productsDiv = document.getElementById('products');
             productsDiv.innerHTML = ''; // Limpa os produtos existentes
 
-            fetch(https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=${searchTerm})
+            fetch(`https://api.lomadee.com/v3/${appToken}/offer/_search?sourceId=${sourceId}&keyword=${searchTerm}`)
                 .then(response => response.json())
                 .then(data => {
                     data.offers.forEach(offer => {
                         const productDiv = document.createElement('div');
                         productDiv.className = 'product';
-                        productDiv.innerHTML = 
+                        productDiv.innerHTML = `
                             <img src="${offer.thumbnail}" alt="Imagem do produto ${offer.name}">
                             <h3>${offer.name}</h3>
                             <p>Preço: R$${offer.price}</p>
                             <a class="buy-button" href="${offer.link}" target="_blank">Comprar</a>
-                        ;
+                        `;
                         productsDiv.appendChild(productDiv);
                     });
                 });
