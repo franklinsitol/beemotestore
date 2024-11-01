@@ -3,216 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beemote Store</title>
-    <link rel="icon" href="https://beemote.online/assets/images/logo-beemote-png-96x96.webp" type="image/png">
-    <link rel="manifest" href="/manifest.json"> <!-- Manifest para PWA -->
+    <title>ShopMercado</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f8f8;
-        }
-        header {
-            background-color: #000; /* Preto */
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .logo {
-            cursor: pointer;
-        }
-        .search-container {
-            text-align: center;
-            margin: 20px auto;
-        }
-        .search-box {
-            margin-bottom: 20px;
-        }
-        .search-box input {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            width: 80%; /* Largura responsiva do campo de busca */
-            max-width: 400px; /* Largura máxima */
-            margin-right: 10px;
-            box-shadow: none; /* Remove a sombra */
-            outline: none; /* Remove o contorno */
-        }
-        .search-box button {
-            background-color: white; /* Botão branco */
-            color: #000; /* Texto preto */
-            border: 1px solid #000; /* Borda preta */
-            border-radius: 5px;
-            padding: 10px 15px;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .search-box button:hover {
-            background-color: #000; /* Preto ao passar o mouse */
-            color: white; /* Texto branco ao passar o mouse */
-        }
-        .products {
-            margin: 20px auto;
-            display: grid; /* Ativa o layout de grid */
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Define colunas responsivas */
-            gap: 20px; /* Espaçamento entre os itens */
-            max-width: 1200px; /* Largura máxima da grid */
-        }
-        .product {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: white;
-            text-align: center;
-            transition: box-shadow 0.3s; /* Efeito de sombra ao passar o mouse */
-        }
-        .product:hover {
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra ao passar o mouse */
-        }
-        .product img {
-            max-width: 100%;
-            height: auto;
-        }
-        .buy-button {
-            display: inline-block;
-            background-color: #000; /* Preto */
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none; /* Remove o sublinhado */
-            margin-top: 10px;
-            transition: background-color 0.3s;
-        }
-        .buy-button:hover {
-            background-color: #444; /* Cinza escuro ao passar o mouse */
-        }
-        .carousel {
-            display: flex;
-            overflow: hidden;
-            position: relative;
-            max-width: 100%; /* Largura máxima do carrossel */
-            margin: 20px auto;
-        }
-        .carousel-container {
-            display: flex;
-            transition: transform 0.5s ease;
-        }
-        .carousel-item {
-            min-width: 200px; /* Largura mínima de cada item do carrossel */
-            margin-right: 10px; /* Espaço entre os itens */
-        }
-        .carousel button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .carousel .prev {
-            left: 10px;
-        }
-        .carousel .next {
-            right: 10px;
-        }
-        footer {
-            background-color: #000; /* Preto */
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-        .countdown {
-            text-align: center;
-            font-size: 18px;
-            margin: 10px 0;
-            color: #000; /* Preto */
-        }
-        .offer-title {
-            text-align: center;
-            font-size: 24px;
-            margin: 20px 0;
-            color: #000; /* Preto */
-        }
-        @media (max-width: 600px) {
-            .search-box input {
-                width: 70%; /* Largura reduzida em telas pequenas */
-            }
-        }
+        body { font-family: Arial, sans-serif; }
+        .products, .stores { display: flex; flex-wrap: wrap; }
+        .product, .store { border: 1px solid #ccc; margin: 10px; padding: 10px; width: 200px; }
     </style>
 </head>
-<body onload="init()">
-    <header>
-        <img src="https://beemote.online/assets/images/logo-beemote-png-96x96.webp" alt="Logo Beemote" class="logo" onclick="resetSearch()">
-        <h1>Beemote Store</h1>
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" id="search" placeholder="Buscar produtos..." onkeypress="checkEnter(event)">
-                <button onclick="searchProducts()">Buscar</button>
-            </div>
-        </div>
-    </header>
+<body>
+    <h1>Ofertas</h1>
+    <div class="products" id="products"></div>
     
-    <!-- Título e Contagem Regressiva -->
-    <div class="offer-title">Ofertas da Hora</div>
-    <div class="countdown" id="countdown"></div>
-
-    <!-- Produtos encontrados -->
-    <div id="products" class="products"></div>
-
-    <!-- Carrossel de Ofertas da Hora -->
-    <div class="carousel">
-        <button class="prev" onclick="moveCarousel(-1)">&#10094;</button>
-        <div id="carousel-container" class="carousel-container"></div>
-        <button class="next" onclick="moveCarousel(1)">&#10095;</button>
-    </div>
-
-    <!-- Carrossel de Lojas Parceiras -->
-    <div class="offer-title">Lojas Parceiras</div>
-    <div class="carousel">
-        <button class="prev" onclick="movePartnerCarousel(-1)">&#10094;</button>
-        <div id="partner-carousel-container" class="carousel-container"></div>
-        <button class="next" onclick="movePartnerCarousel(1)">&#10095;</button>
-    </div>
-    
-    <footer>
-        <p>&copy; 2024 Beemote Store. Todos os direitos reservados.</p>
-    </footer>
+    <h1>Lojas</h1>
+    <div class="stores" id="partner-carousel-container"></div>
 
     <script>
-        const appToken = '16874466809043c9fab25';
         const sourceId = '36043605';
-        let currentIndex = 0;
-        const itemsToShow = 3; // Número de itens a serem mostrados no carrossel
-        let countdownInterval;
+        const appToken = '16874466809043c9fab25';
 
         async function fetchProducts(url, containerId, isStore = false) {
-            const response = await fetch(url);
-            const data = await response.json();
-            const container = document.getElementById(containerId);
-            container.innerHTML = ''; // Limpa o conteúdo existente
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                renderProducts(data, containerId, isStore);
+            } catch (error) {
+                console.error('Fetch error:', error);
+            }
+        }
 
-            const items = isStore ? data.stores : data.offers;
-            items.slice(0, 10).forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'carousel-item';
-                itemDiv.innerHTML = `
-                    <div class="product">
-                        <img src="${isStore ? item.thumbnail : item.thumbnail}" alt="Imagem do ${isStore ? 'loja' : 'produto'} ${item.name}">
-                        <h3>${item.name}</h3>
-                        ${isStore ? `<a class="buy-button" href="${item.link}" target="_blank">Visitar Loja</a>` 
-                                  : `<a class="buy-button" href="${item.link}" target="_blank">Comprar</a>`}
-                    </div>
-                `;
-                container.appendChild(itemDiv);
-            });
+        function renderProducts(data, containerId, isStore) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; // Limpa o conteúdo anterior
+            if (isStore) {
+                data.stores.forEach(store => {
+                    const div = document.createElement('div');
+                    div.className = 'store';
+                    div.innerHTML = `<h3>${store.name}</h3><p>${store.description}</p>`;
+                    container.appendChild(div);
+                });
+            } else {
+                data.offers.forEach(offer => {
+                    const div = document.createElement('div');
+                    div.className = 'product';
+                    div.innerHTML = `<h3>${offer.name}</h3><p>Preço: ${offer.price}</p>`;
+                    container.appendChild(div);
+                });
+            }
         }
 
         async function fetchOffers() {
@@ -225,81 +62,9 @@
             await fetchProducts(url, 'partner-carousel-container', true);
         }
 
-        function resetSearch() {
-            document.getElementById('search').value = '';
-            fetchOffers();
-            fetchStores();
-        }
-
-        function checkEnter(event) {
-            if (event.key === 'Enter') {
-                searchProducts();
-            }
-        }
-
-        async function searchProducts() {
-            const query = document.getElementById('search').value;
-            if (!query) return;
-
-            const url = `https://api.lomadee.com.br/public/api/offers?sourceId=${sourceId}&appToken=${appToken}&query=${query}`;
-            await fetchProducts(url, 'products');
-        }
-
-        function moveCarousel(direction) {
-            const carousel = document.getElementById('carousel-container');
-            currentIndex += direction;
-            const totalItems = carousel.children.length;
-
-            if (currentIndex < 0) {
-                currentIndex = totalItems - itemsToShow; // Loop para o final
-            } else if (currentIndex >= totalItems) {
-                currentIndex = 0; // Loop para o início
-            }
-
-            const offset = -currentIndex * (carousel.children[0].clientWidth + 10); // 10 é o margin-right
-            carousel.style.transform = `translateX(${offset}px)`;
-        }
-
-        let partnerCurrentIndex = 0;
-
-        function movePartnerCarousel(direction) {
-            const partnerCarousel = document.getElementById('partner-carousel-container');
-            partnerCurrentIndex += direction;
-            const totalItems = partnerCarousel.children.length;
-
-            if (partnerCurrentIndex < 0) {
-                partnerCurrentIndex = totalItems - itemsToShow; // Loop para o final
-            } else if (partnerCurrentIndex >= totalItems) {
-                partnerCurrentIndex = 0; // Loop para o início
-            }
-
-            const offset = -partnerCurrentIndex * (partnerCarousel.children[0].clientWidth + 10); // 10 é o margin-right
-            partnerCarousel.style.transform = `translateX(${offset}px)`;
-        }
-
-        function init() {
-            fetchOffers();
-            fetchStores();
-            startCountdown();
-        }
-
-        function startCountdown() {
-            const countdownElement = document.getElementById('countdown');
-            let timeLeft = 3600; // 1 hora em segundos
-
-            countdownInterval = setInterval(() => {
-                const hours = Math.floor(timeLeft / 3600);
-                const minutes = Math.floor((timeLeft % 3600) / 60);
-                const seconds = timeLeft % 60;
-                countdownElement.innerText = `Restam ${hours}h ${minutes}m ${seconds}s`;
-                timeLeft--;
-
-                if (timeLeft < 0) {
-                    clearInterval(countdownInterval);
-                    countdownElement.innerText = "As ofertas acabaram!";
-                }
-            }, 1000);
-        }
+        // Chama as funções para buscar ofertas e lojas
+        fetchOffers();
+        fetchStores();
     </script>
 </body>
 </html>
