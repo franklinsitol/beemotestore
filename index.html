@@ -3,825 +3,785 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beemote Store - Produtos Fofos e Modernos</title>
+    <title>Beemote Store - Integrado com Lomadee</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #FF6B8B;
-            --secondary-color: #6BD5E1;
-            --accent-color: #FFD166;
-            --dark-color: #333333;
-            --light-color: #F7F7F7;
-            --white: #FFFFFF;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--light-color);
-            color: var(--dark-color);
-            line-height: 1.6;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
+        :root { --primary: #FF7F50; --secondary: #4ECDC4; --dark: #292F36; --light: #F7FFF7; --accent: #FF6B6B; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f5f5f5; color: var(--dark); line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Header */
         header {
-            background-color: var(--white);
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 15px 0;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-
-        .mascote {
-            font-size: 24px;
-        }
-
-        .search-container {
-            display: flex;
-            margin: 15px 0;
-        }
-
-        #search-input {
-            flex: 1;
-            padding: 10px 15px;
-            border: 2px solid var(--secondary-color);
-            border-radius: 25px 0 0 25px;
-            font-size: 16px;
-            outline: none;
-        }
-
-        #search-button {
-            background-color: var(--primary-color);
+            background-color: var(--primary);
             color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 0 25px 25px 0;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-        #search-button:hover {
-            background-color: #e05a7b;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 20px;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--dark-color);
-            font-weight: 600;
-            padding: 5px 0;
-            position: relative;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--primary-color);
-            transition: width 0.3s ease;
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        h2 {
-            margin: 30px 0 20px;
-            color: var(--primary-color);
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background-color: var(--accent-color);
-        }
-
-        .filter-container {
+        
+        .header-top {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .logo-icon {
+            font-size: 36px;
+            margin-right: 10px;
+        }
+        
+        .search-bar {
+            flex-grow: 1;
+            max-width: 600px;
+            margin: 0 20px;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 100;
+            display: none;
+        }
+        
+        .search-result-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-result-item:hover {
+            background: #f9f9f9;
+        }
+        
+        .search-result-item img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
+        
+        .user-actions a {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-right: 20px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
             margin-bottom: 20px;
         }
-
-        .filter-container select {
-            padding: 8px 15px;
-            border: 2px solid var(--secondary-color);
-            border-radius: 5px;
-            background-color: var(--white);
-            font-size: 14px;
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 30px;
         }
-
-        .products-grid {
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #e66a3c;
+            transform: translateY(-2px);
+        }
+        
+        /* Categories */
+        .categories {
+            padding: 40px 0;
+            background-color: white;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            color: var(--dark);
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .category-card {
+            background-color: var(--light);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .category-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        /* Products */
+        .products {
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+        
+        .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 25px;
         }
-
+        
         .product-card {
-            background-color: var(--white);
-            border-radius: 10px;
+            background-color: white;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
         }
-
+        
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-
+        
         .product-image {
-            width: 100%;
             height: 200px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
-
+        
         .product-info {
             padding: 15px;
         }
-
+        
         .product-title {
             font-size: 16px;
-            margin-bottom: 8px;
-            color: var(--dark-color);
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+            margin-bottom: 10px;
+            height: 40px;
             overflow: hidden;
         }
-
+        
         .product-price {
+            font-size: 20px;
             font-weight: bold;
-            color: var(--primary-color);
-            font-size: 18px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .product-merchant {
+            font-size: 14px;
+            color: #777;
             margin-bottom: 10px;
         }
-
-        .add-to-cart {
-            background-color: var(--primary-color);
+        
+        .buy-button {
+            display: block;
+            width: 100%;
+            background-color: var(--primary);
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            width: 100%;
-            font-weight: 600;
             transition: background-color 0.3s ease;
         }
-
-        .add-to-cart:hover {
-            background-color: #e05a7b;
+        
+        .buy-button:hover {
+            background-color: #e66a3c;
         }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin: 30px 0;
-            gap: 10px;
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: var(--primary);
         }
-
-        .pagination button {
-            padding: 8px 15px;
-            background-color: var(--white);
-            border: 1px solid var(--secondary-color);
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        
+        .loading i {
+            margin-right: 10px;
+            animation: spin 1s linear infinite;
         }
-
-        .pagination button.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-
-        .pagination button:hover:not(.active) {
-            background-color: var(--light-color);
+        
+        .error {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: var(--accent);
         }
-
+        
+        /* Footer */
         footer {
-            background-color: var(--dark-color);
-            color: var(--white);
-            padding: 40px 0 0;
+            background-color: var(--dark);
+            color: white;
+            padding: 50px 0 20px;
         }
-
-        .footer-section {
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
             margin-bottom: 30px;
         }
-
-        .footer-section h3 {
-            margin-bottom: 15px;
-            color: var(--accent-color);
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
         }
-
-        .footer-section ul {
+        
+        .footer-column ul {
             list-style: none;
         }
-
-        .footer-section ul li {
-            margin-bottom: 8px;
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
         }
-
-        .footer-section a {
-            color: var(--white);
+        
+        .footer-column a {
+            color: #ccc;
             text-decoration: none;
             transition: color 0.3s ease;
         }
-
-        .footer-section a:hover {
-            color: var(--secondary-color);
+        
+        .footer-column a:hover {
+            color: white;
         }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .social-icons a {
-            color: var(--white);
-            font-size: 20px;
-            transition: color 0.3s ease;
-        }
-
-        .social-icons a:hover {
-            color: var(--primary-color);
-        }
-
-        .copyright {
+        
+        .footer-bottom {
             text-align: center;
-            padding: 15px 0;
-            background-color: rgba(0, 0, 0, 0.2);
-            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            font-size: 14px;
+            color: #999;
         }
-
-        .loading {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255,107,139,0.3);
-            border-radius: 50%;
-            border-top-color: var(--primary-color);
-            animation: spin 1s ease-in-out infinite;
-            margin: 30px auto;
-            display: block;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            text-align: center;
-            color: var(--primary-color);
-            margin-top: 10px;
-        }
-
-        .no-results {
-            text-align: center;
-            grid-column: 1 / -1;
-            padding: 40px 0;
-            color: var(--dark-color);
-        }
-
-        @media (min-width: 768px) {
-            header .container {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
             }
-
-            .search-container {
-                margin: 0;
-                width: 40%;
+            
+            .search-bar {
+                margin: 15px 0;
+                max-width: 100%;
             }
-
-            .footer-content {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 30px;
+            
+            nav {
+                flex-direction: column;
             }
-        }
-
-        @media (max-width: 767px) {
-            nav ul {
+            
+            .nav-links {
+                flex-wrap: wrap;
                 justify-content: center;
             }
             
-            .filter-container {
-                flex-direction: column;
-                gap: 10px;
+            .nav-links li {
+                margin: 5px 10px;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
             }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <!-- Header -->
     <header>
         <div class="container">
-            <div class="logo-container">
-                <div class="logo">Beemote Store</div>
-                <span class="mascote">
-                    🦛
-                </span>
-            </div>
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="O que você está procurando?">
-                <button id="search-button"><i class="fas fa-search"></i></button>
+            <div class="header-top">
+                <div class="logo">
+                    <span class="logo-icon">🦛</span>
+                    Beemote Store
+                </div>
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="O que você está procurando?">
+                    <div class="search-results" id="search-results"></div>
+                </div>
+                <div class="user-actions">
+                    <a href="#" id="account-link">Minha Conta</a>
+                    <a href="#" id="cart-link">Carrinho (0)</a>
+                </div>
             </div>
             <nav>
-                <ul>
-                    <li><a href="#home">Início</a></li>
-                    <li><a href="#products">Produtos</a></li>
-                    <li><a href="#about">Sobre Nós</a></li>
-                    <li><a href="#contact">Contato</a></li>
+                <ul class="nav-links">
+                    <li><a href="#" data-category="eletronicos">Eletrônicos</a></li>
+                    <li><a href="#" data-category="moda">Moda</a></li>
+                    <li><a href="#" data-category="casa">Casa e Decoração</a></li>
+                    <li><a href="#" data-category="beleza">Beleza</a></li>
+                    <li><a href="#" data-category="esportes">Esportes</a></li>
+                    <li><a href="#" data-category="livros">Livros</a></li>
                 </ul>
+                <a href="#" id="deals-link">Ofertas do Dia</a>
             </nav>
         </div>
     </header>
 
-    <main>
-        <section id="featured-products" class="container">
-            <h2>Destaques</h2>
-            <div class="products-grid" id="featured-products-grid">
-                <div class="loading"></div>
-                <p class="loading-text">Carregando produtos...</p>
-            </div>
-        </section>
-
-        <section id="all-products" class="container">
-            <h2>Todos os Produtos</h2>
-            <div class="filter-container">
-                <select id="category-filter">
-                    <option value="">Todas as categorias</option>
-                </select>
-                <select id="sort-by">
-                    <option value="relevance">Relevância</option>
-                    <option value="price_asc">Preço: menor para maior</option>
-                    <option value="price_desc">Preço: maior para menor</option>
-                </select>
-            </div>
-            <div class="products-grid" id="all-products-grid">
-                <div class="loading"></div>
-                <p class="loading-text">Carregando produtos...</p>
-            </div>
-            <div class="pagination" id="pagination"></div>
-        </section>
-    </main>
-
-    <footer>
+    <!-- Hero Section -->
+    <section class="hero">
         <div class="container">
-            <div class="footer-section">
-                <h3>Beemote Store</h3>
-                <p>Sua loja de produtos fofos e modernos.</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-pinterest"></i></a>
+            <h1>Beemote Store - Integrado com Lomadee</h1>
+            <p>Produtos reais carregados automaticamente. Atualizado em tempo real!</p>
+            <a href="#" class="cta-button" id="view-offers">Ver Ofertas</a>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories">
+        <div class="container">
+            <h2 class="section-title">Categorias Populares</h2>
+            <div class="category-grid">
+                <div class="category-card" data-category="eletronicos">
+                    <div class="category-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Eletrônicos</h3>
+                </div>
+                <div class="category-card" data-category="moda">
+                    <div class="category-icon"><i class="fas fa-tshirt"></i></div>
+                    <h3>Moda</h3>
+                </div>
+                <div class="category-card" data-category="casa">
+                    <div class="category-icon"><i class="fas fa-home"></i></div>
+                    <h3>Casa e Decoração</h3>
+                </div>
+                <div class="category-card" data-category="beleza">
+                    <div class="category-icon"><i class="fas fa-palette"></i></div>
+                    <h3>Beleza</h3>
+                </div>
+                <div class="category-card" data-category="esportes">
+                    <div class="category-icon"><i class="fas fa-basketball-ball"></i></div>
+                    <h3>Esportes</h3>
+                </div>
+                <div class="category-card" data-category="livros">
+                    <div class="category-icon"><i class="fas fa-book"></i></div>
+                    <h3>Livros</h3>
                 </div>
             </div>
-            <div class="footer-section">
-                <h3>Links Úteis</h3>
-                <ul>
-                    <li><a href="#">Política de Privacidade</a></li>
-                    <li><a href="#">Termos de Serviço</a></li>
-                    <li><a href="#">Trocas e Devoluções</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contato</h3>
-                <p>contato@beemotestore.com</p>
-                <p>(11) 98765-4321</p>
+        </div>
+    </section>
+
+    <!-- Products -->
+    <section class="products">
+        <div class="container">
+            <h2 class="section-title" id="category-title">Produtos em Destaque</h2>
+            <div class="product-grid" id="product-grid">
+                <div class="loading">
+                    <i class="fas fa-spinner"></i> Carregando produtos...
+                </div>
             </div>
         </div>
-        <div class="copyright">
-            <p>&copy; 2023 Beemote Store. Todos os direitos reservados.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Beemote Store</h3>
+                    <p>Site de afiliados com produtos das melhores lojas.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Políticas</h3>
+                    <ul>
+                        <li><a href="#" id="privacy-link">Privacidade</a></li>
+                        <li><a href="#" id="terms-link">Termos de Uso</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Afiliados</h3>
+                    <p>Parceria com Lomadee. Atendimento pelas lojas.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Beemote Store. Todos os direitos reservados.</p>
+                <p>Atendimento realizado diretamente pelas lojas parceiras.</p>
+            </div>
         </div>
     </footer>
 
     <script>
-        // SOLUÇÃO ALTERNATIVA - Dados mockados que simulam a API
-        // Isso vai garantir que a loja funcione mesmo sem acesso à API
-        
-        // Configurações
-        const MOCK_MODE = false; // Altere para false quando a API estiver funcionando
-        const API_KEY = '0ff84c9e-f757-4868-be49-4209f2581c50';
-        const PUBLISHER_ID = '1759561';
-        
-        // Elementos do DOM
-        const featuredProductsGrid = document.getElementById('featured-products-grid');
-        const allProductsGrid = document.getElementById('all-products-grid');
+        // CONFIGURAÇÃO LOMADEE - COM SUAS CREDENCIAIS
+        const LOMADEE_CONFIG = {
+            appToken: "16874466809043c9fab25",
+            sourceId: "36043605"
+        };
+
+        // Dados de exemplo para quando a API não funcionar
+        const PRODUCTS_DATA = {
+            eletronicos: [
+                { 
+                    id: 1, 
+                    name: "Smartphone Android 128GB", 
+                    price: 1299.99, 
+                    image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                    merchant: "Loja Eletrônicos",
+                    link: "https://www.awin1.com/cread.php?awinmid=12345&awinaffid=36043605&ued=https://exemplo.com/produto1"
+                },
+                { 
+                    id: 2, 
+                    name: "Fone de Ouvido Bluetooth", 
+                    price: 199.90, 
+                    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                    merchant: "Tech Store",
+                    link: "https://www.awin1.com/cread.php?awinmid=12346&awinaffid=36043605&ued=https://exemplo.com/produto2"
+                }
+            ],
+            moda: [
+                { 
+                    id: 3, 
+                    name: "Camiseta Básica Masculina", 
+                    price: 39.90, 
+                    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                    merchant: "Moda Store",
+                    link: "https://www.awin1.com/cread.php?awinmid=12347&awinaffid=36043605&ued=https://exemplo.com/produto3"
+                },
+                { 
+                    id: 4, 
+                    name: "Tênis Esportivo", 
+                    price: 199.90, 
+                    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                    merchant: "Shoe Store",
+                    link: "https://www.awin1.com/cread.php?awinmid=12348&awinaffid=36043605&ued=https://exemplo.com/produto4"
+                }
+            ],
+            casa: [
+                { 
+                    id: 5, 
+                    name: "Jogo de Panelas Antiaderente", 
+                    price: 299.90, 
+                    image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                    merchant: "Casa & Cozinha",
+                    link: "https://www.awin1.com/cread.php?awinmid=12349&awinaffid=36043605&ued=https://exemplo.com/produto5"
+                }
+            ],
+            beleza: [
+                { 
+                    id: 6, 
+                    name: "Kit Maquiagem Profissional", 
+                    price: 149.90, 
+                    image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                    merchant: "Beleza Store",
+                    link: "https://www.awin1.com/cread.php?awinmid=12350&awinaffid=36043605&ued=https://exemplo.com/produto6"
+                }
+            ],
+            esportes: [
+                { 
+                    id: 7, 
+                    name: "Bola de Futebol Oficial", 
+                    price: 89.90, 
+                    image: "https://images.unsplash.com/photo-1614632537197-38a17061c2bd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                    merchant: "Esportes Shop",
+                    link: "https://www.awin1.com/cread.php?awinmid=12351&awinaffid=36043605&ued=https://exemplo.com/produto7"
+                }
+            ],
+            livros: [
+                { 
+                    id: 8, 
+                    name: "Box Trilogia Best-Seller", 
+                    price: 89.90, 
+                    image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                    merchant: "Livraria Online",
+                    link: "https://www.awin1.com/cread.php?awinmid=12352&awinaffid=36043605&ued=https://exemplo.com/produto8"
+                }
+            ]
+        };
+
+        // Elementos DOM
+        const productGrid = document.getElementById('product-grid');
+        const categoryTitle = document.getElementById('category-title');
         const searchInput = document.getElementById('search-input');
-        const searchButton = document.getElementById('search-button');
-        const categoryFilter = document.getElementById('category-filter');
-        const sortBy = document.getElementById('sort-by');
-        const pagination = document.getElementById('pagination');
+        const searchResults = document.getElementById('search-results');
 
-        // Estado da aplicação
-        let products = [];
-        let filteredProducts = [];
-        let currentPage = 1;
-        const productsPerPage = 12;
-        let categories = [];
+        // Inicializar a página
+        function initializePage() {
+            console.log("🚀 Beemote Store Iniciada!");
+            console.log("📱 Token Lomadee:", LOMADEE_CONFIG.appToken);
+            console.log("🆔 Source ID:", LOMADEE_CONFIG.sourceId);
 
-        // Dados mockados - produtos com tema de hipopótamo e itens fofos
-        const MOCK_PRODUCTS = [
-            {
-                id: 1,
-                title: 'Pelúcia Hipopótamo Rosa Grande',
-                price: 89.90,
-                image: 'https://m.media-amazon.com/images/I/61lG+WZ4VPL._AC_UF1000,1000_QL80_.jpg',
-                category: 'Pelúcias',
-                url: '#',
-                merchant: 'Loja de Pelúcias'
-            },
-            {
-                id: 2,
-                title: 'Camiseta Hipopótamo Estampada',
-                price: 49.90,
-                image: 'https://m.media-amazon.com/images/I/A1XhSpYQjQL._AC_UY1000_.jpg',
-                category: 'Roupas',
-                url: '#',
-                merchant: 'Moda Fofa'
-            },
-            {
-                id: 3,
-                title: 'Caneca Hipopótamo Sorridente',
-                price: 35.00,
-                image: 'https://m.media-amazon.com/images/I/71qMKLNa4eL._AC_UF1000,1000_QL80_.jpg',
-                category: 'Casa',
-                url: '#',
-                merchant: 'Casa e Cozinha'
-            },
-            {
-                id: 4,
-                title: 'Almofada Hipopótamo Cinza',
-                price: 65.00,
-                image: 'https://m.media-amazon.com/images/I/71YHjVXyR0L._AC_UF1000,1000_QL80_.jpg',
-                category: 'Decoração',
-                url: '#',
-                merchant: 'Decoração Fofa'
-            },
-            {
-                id: 5,
-                title: 'Kit de Canetas Hipopótamo',
-                price: 22.50,
-                image: 'https://m.media-amazon.com/images/I/81yZ9OHy2TL._AC_UF1000,1000_QL80_.jpg',
-                category: 'Papelaria',
-                url: '#',
-                merchant: 'Papelaria Criativa'
-            },
-            {
-                id: 6,
-                title: 'Mochila Infantil Hipopótamo',
-                price: 120.00,
-                image: 'https://m.media-amazon.com/images/I/71Yq+XdDmZL._AC_UF1000,1000_QL80_.jpg',
-                category: 'Acessórios',
-                url: '#',
-                merchant: 'Acessórios Kids'
-            },
-            {
-                id: 7,
-                title: 'Pijama Hipopótamo Adulto',
-                price: 79.90,
-                image: 'https://m.media-amazon.com/images/I/71QN+QYqZBL._AC_UF1000,1000_QL80_.jpg',
-                category: 'Roupas',
-                url: '#',
-                merchant: 'Moda Conforto'
-            },
-            {
-                id: 8,
-                title: 'Porta-trecos Hipopótamo',
-                price: 45.00,
-                image: 'https://m.media-amazon.com/images/I/71zZiQ7zWJL._AC_UF1000,1000_QL80_.jpg',
-                category: 'Organização',
-                url: '#',
-                merchant: 'Organize Bem'
-            }
-        ];
-
-        // Função para buscar produtos (versão mockada)
-        async function fetchMockProducts() {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve({
-                        data: MOCK_PRODUCTS
-                    });
-                }, 800); // Simula delay de rede
-            });
-        }
-
-        // Função para buscar produtos da API Awin (versão real)
-        async function fetchRealProducts(searchTerm = '', category = '') {
-            try {
-                const params = new URLSearchParams();
-                params.append('format', 'json');
-                params.append('relationship', 'joined');
-                params.append('minPrice', '1');
-                
-                if (searchTerm) params.append('search', searchTerm);
-                if (category) params.append('category', category);
-                
-                const response = await fetch(`https://api.awin.com/publishers/${PUBLISHER_ID}/products/?${params.toString()}`, {
-                    headers: {
-                        'Authorization': `Bearer ${API_KEY}`,
-                        'Content-Type': 'application/json'
+            // Carregar produtos iniciais
+            loadProducts('eletronicos');
+            
+            // Event listeners para categorias
+            document.querySelectorAll('.nav-links a, .category-card').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const category = this.getAttribute('data-category');
+                    if (category) {
+                        loadProducts(category);
+                        window.scrollTo({ top: productGrid.offsetTop - 100, behavior: 'smooth' });
                     }
                 });
-                
-                if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-                
-                return await response.json();
-            } catch (error) {
-                console.error('Erro na API real:', error);
-                // Retorna os mockados se a API falhar
-                return { data: MOCK_PRODUCTS };
-            }
-        }
+            });
 
-        // Função principal para buscar produtos
-        async function fetchProducts(searchTerm = '', category = '') {
-            try {
-                featuredProductsGrid.innerHTML = '<div class="loading"></div><p class="loading-text">Carregando produtos...</p>';
-                allProductsGrid.innerHTML = '<div class="loading"></div><p class="loading-text">Carregando produtos...</p>';
-                
-                let data;
-                
-                if (MOCK_MODE) {
-                    data = await fetchMockProducts();
+            // Event listener para busca
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                if (query.length > 2) {
+                    searchProducts(query);
                 } else {
-                    data = await fetchRealProducts(searchTerm, category);
+                    searchResults.style.display = 'none';
                 }
+            });
+
+            // Event listeners para políticas
+            document.getElementById('privacy-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                showPolicyModal('Política de Privacidade', 'Respeitamos sua privacidade. Coletamos apenas informações necessárias para melhorar sua experiência de compra.');
+            });
+
+            document.getElementById('terms-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                showPolicyModal('Termos de Uso', 'Todo o processo de compra é realizado diretamente nas lojas parceiras. A Beemote Store atua como intermediária através do programa de afiliados.');
+            });
+
+            // Event listener para ofertas
+            document.getElementById('view-offers').addEventListener('click', function(e) {
+                e.preventDefault();
+                loadProducts('eletronicos');
+            });
+        }
+
+        // Carregar produtos
+        async function loadProducts(category) {
+            showLoading();
+            
+            // Tentar carregar da API Lomadee primeiro
+            try {
+                console.log(`📦 Tentando carregar produtos da categoria: ${category}`);
                 
-                // Processa os produtos
-                products = Array.isArray(data) ? data : (data.data || data.products || []);
+                // URL alternativa da Lomadee (versão mais compatível)
+                const url = `https://api.lomadee.com/v2/150002195/product/_category?categoryId=1&size=12&sourceId=${LOMADEE_CONFIG.sourceId}&appToken=${LOMADEE_CONFIG.appToken}`;
                 
-                // Garante que temos pelo menos os produtos mockados
-                if (products.length === 0 && !MOCK_MODE) {
-                    products = MOCK_PRODUCTS;
+                const response = await fetch(url);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.products && data.products.length > 0) {
+                        console.log("✅ Produtos carregados da Lomadee:", data.products.length);
+                        displayProducts(data.products);
+                        categoryTitle.textContent = `Produtos em ${getCategoryName(category)}`;
+                        return;
+                    }
                 }
-                
-                // Filtra produtos com preço válido
-                products = products.filter(p => p.price > 0);
-                
-                filteredProducts = [...products];
-                
-                // Extrair categorias únicas
-                categories = [...new Set(products.map(p => p.category || 'Outros'))];
-                populateCategoryFilter();
-                
-                displayFeaturedProducts();
-                displayAllProducts();
-                updatePagination();
-                
             } catch (error) {
-                console.error('Erro ao carregar produtos:', error);
-                // Usa os mockados em caso de erro
-                products = MOCK_PRODUCTS;
-                filteredProducts = [...products];
-                categories = [...new Set(products.map(p => p.category || 'Outros'))];
-                
-                populateCategoryFilter();
-                displayFeaturedProducts();
-                displayAllProducts();
-                updatePagination();
-                
-                featuredProductsGrid.innerHTML = `
-                    <p class="no-results">
-                        Não foi possível carregar produtos da API. Mostrando exemplos.
-                        <button onclick="fetchProducts()" style="
-                            background: var(--primary-color);
-                            color: white;
-                            border: none;
-                            padding: 8px 15px;
-                            border-radius: 5px;
-                            cursor: pointer;
-                            margin-top: 10px;
-                        ">
-                            Tentar novamente
-                        </button>
-                    </p>
-                `;
+                console.log("❌ Erro na API Lomadee, usando dados locais:", error);
+            }
+            
+            // Fallback para dados locais
+            setTimeout(() => {
+                const products = PRODUCTS_DATA[category] || PRODUCTS_DATA.eletronicos;
+                displayProducts(products);
+                categoryTitle.textContent = `Produtos em ${getCategoryName(category)} (Modo Demo)`;
+                console.log("🔄 Usando dados de exemplo");
+            }, 1000);
+        }
+
+        // Buscar produtos
+        function searchProducts(query) {
+            const allProducts = Object.values(PRODUCTS_DATA).flat();
+            const results = allProducts.filter(product => 
+                product.name.toLowerCase().includes(query.toLowerCase())
+            ).slice(0, 5);
+            
+            displaySearchResults(results);
+        }
+
+        // Exibir produtos
+        function displayProducts(products) {
+            productGrid.innerHTML = '';
+            
+            if (products && products.length > 0) {
+                products.forEach(product => {
+                    const productCard = createProductCard(product);
+                    productGrid.appendChild(productCard);
+                });
+            } else {
+                productGrid.innerHTML = '<div class="error">Nenhum produto encontrado.</div>';
             }
         }
 
-        // [Manter todas as outras funções: populateCategoryFilter, displayFeaturedProducts, 
-        // displayAllProducts, createProductCard, updatePagination, filterProducts, 
-        // getRandomProducts e event listeners]
-        
-        // Função para popular o filtro de categorias
-        function populateCategoryFilter() {
-            categoryFilter.innerHTML = '<option value="">Todas as categorias</option>';
-            categories.forEach(category => {
-                const option = document.createElement('option');
-                option.value = category;
-                option.textContent = category;
-                categoryFilter.appendChild(option);
-            });
-        }
-
-        // Função para exibir produtos em destaque
-        function displayFeaturedProducts() {
-            featuredProductsGrid.innerHTML = '';
-            const featuredProducts = getRandomProducts(filteredProducts, 6);
+        // Exibir resultados da busca
+        function displaySearchResults(products) {
+            searchResults.innerHTML = '';
             
-            if (featuredProducts.length === 0) {
-                featuredProductsGrid.innerHTML = '<p class="no-results">Nenhum produto em destaque encontrado.</p>';
-                return;
+            if (products.length > 0) {
+                products.forEach(product => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'search-result-item';
+                    resultItem.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}">
+                        <div>
+                            <div>${product.name}</div>
+                            <div class="product-price">${formatPrice(product.price)}</div>
+                        </div>
+                    `;
+                    resultItem.addEventListener('click', function() {
+                        window.open(product.link, '_blank');
+                        searchResults.style.display = 'none';
+                        searchInput.value = '';
+                        trackConversion(product.id);
+                    });
+                    searchResults.appendChild(resultItem);
+                });
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.style.display = 'none';
             }
-            
-            featuredProducts.forEach(product => {
-                const productCard = createProductCard(product);
-                featuredProductsGrid.appendChild(productCard);
-            });
         }
 
-        // Função para exibir todos os produtos com paginação
-        function displayAllProducts() {
-            allProductsGrid.innerHTML = '';
-            const startIndex = (currentPage - 1) * productsPerPage;
-            const endIndex = startIndex + productsPerPage;
-            const productsToDisplay = filteredProducts.slice(startIndex, endIndex);
-            
-            if (productsToDisplay.length === 0) {
-                allProductsGrid.innerHTML = '<p class="no-results">Nenhum produto encontrado. Tente alterar seus critérios de busca.</p>';
-                return;
-            }
-            
-            productsToDisplay.forEach(product => {
-                const productCard = createProductCard(product);
-                allProductsGrid.appendChild(productCard);
-            });
-        }
-
-        // Função para criar um card de produto
+        // Criar card de produto
         function createProductCard(product) {
             const card = document.createElement('div');
             card.className = 'product-card';
-            
-            // Imagem com fallback
-            const imageUrl = product.image || 'https://via.placeholder.com/300x300?text=Imagem+Indispon%C3%ADvel';
-            
             card.innerHTML = `
-                <img src="${imageUrl}" alt="${product.title}" class="product-image" onerror="this.src='https://via.placeholder.com/300x300?text=Imagem+Indispon%C3%ADvel'">
+                <div class="product-image">
+                    <img src="${product.image}" alt="${product.name}" 
+                         onerror="this.src='https://via.placeholder.com/250?text=Produto'">
+                </div>
                 <div class="product-info">
-                    <h3 class="product-title">${product.title}</h3>
-                    <p class="product-price">R$ ${product.price.toFixed(2)}</p>
-                    <button class="add-to-cart" data-id="${product.id}">Adicionar ao Carrinho</button>
-                    <a href="${product.url || '#'}" target="_blank" class="view-details" style="display: block; text-align: center; margin-top: 8px; color: var(--secondary-color); text-decoration: none;">Ver detalhes</a>
+                    <h3 class="product-title">${product.name}</h3>
+                    <div class="product-merchant">${product.merchant}</div>
+                    <div class="product-price">${formatPrice(product.price)}</div>
+                    <button class="buy-button" data-link="${product.link}">Comprar Agora</button>
                 </div>
             `;
+            
+            card.querySelector('.buy-button').addEventListener('click', function() {
+                const link = this.getAttribute('data-link');
+                window.open(link, '_blank');
+                trackConversion(product.id);
+            });
             
             return card;
         }
 
-        // Função para atualizar a paginação
-        function updatePagination() {
-            pagination.innerHTML = '';
-            const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-            
-            if (totalPages <= 1) return;
-            
-            // Botão Anterior
-            if (currentPage > 1) {
-                const prevButton = document.createElement('button');
-                prevButton.innerHTML = '&laquo; Anterior';
-                prevButton.addEventListener('click', () => {
-                    currentPage--;
-                    displayAllProducts();
-                    updatePagination();
-                    window.scrollTo({ top: allProductsGrid.offsetTop - 100, behavior: 'smooth' });
-                });
-                pagination.appendChild(prevButton);
-            }
-            
-            // Números das páginas
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.textContent = i;
-                if (i === currentPage) pageButton.classList.add('active');
-                pageButton.addEventListener('click', () => {
-                    currentPage = i;
-                    displayAllProducts();
-                    updatePagination();
-                    window.scrollTo({ top: allProductsGrid.offsetTop - 100, behavior: 'smooth' });
-                });
-                pagination.appendChild(pageButton);
-            }
-            
-            // Botão Próximo
-            if (currentPage < totalPages) {
-                const nextButton = document.createElement('button');
-                nextButton.innerHTML = 'Próximo &raquo;';
-                nextButton.addEventListener('click', () => {
-                    currentPage++;
-                    displayAllProducts();
-                    updatePagination();
-                    window.scrollTo({ top: allProductsGrid.offsetTop - 100, behavior: 'smooth' });
-                });
-                pagination.appendChild(nextButton);
-            }
+        // Funções auxiliares
+        function formatPrice(price) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(price);
         }
 
-        // Função para filtrar produtos
-        function filterProducts() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedCategory = categoryFilter.value;
-            const sortOption = sortBy.value;
-            
-            filteredProducts = products.filter(product => {
-                const matchesSearch = product.title.toLowerCase().includes(searchTerm);
-                const matchesCategory = selectedCategory === '' || (product.category || 'Outros') === selectedCategory;
-                return matchesSearch && matchesCategory;
-            });
-            
-            // Ordenar produtos
-            switch (sortOption) {
-                case 'price_asc':
-                    filteredProducts.sort((a, b) => a.price - b.price);
-                    break;
-                case 'price_desc':
-                    filteredProducts.sort((a, b) => b.price - a.price);
-                    break;
-                default:
-                    // Mantém a ordenação padrão (relevância)
-                    break;
-            }
-            
-            currentPage = 1;
-            displayFeaturedProducts();
-            displayAllProducts();
-            updatePagination();
+        function getCategoryName(category) {
+            const names = {
+                'eletronicos': 'Eletrônicos',
+                'moda': 'Moda',
+                'casa': 'Casa e Decoração',
+                'beleza': 'Beleza',
+                'esportes': 'Esportes',
+                'livros': 'Livros'
+            };
+            return names[category] || 'Produtos';
         }
 
-        // Função auxiliar para obter produtos aleatórios
-        function getRandomProducts(productsArray, count) {
-            if (productsArray.length <= count) return [...productsArray];
-            const shuffled = [...productsArray].sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, count);
+        function showLoading() {
+            productGrid.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Carregando produtos...</div>';
         }
 
-        // Event Listeners
-        searchButton.addEventListener('click', filterProducts);
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') filterProducts();
-        });
-        categoryFilter.addEventListener('change', filterProducts);
-        sortBy.addEventListener('change', filterProducts);
+        function trackConversion(productId) {
+            console.log(`🎯 Conversão rastreada: ${productId}`);
+            // Aqui você implementaria o rastreamento real
+        }
 
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchProducts();
-            
-            // Event delegation para o botão de adicionar ao carrinho
-            document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('add-to-cart')) {
-                    const productId = e.target.getAttribute('data-id');
-                    const product = products.find(p => p.id == productId);
-                    if (product) {
-                        alert(`${product.title} adicionado ao carrinho!\nPreço: R$ ${product.price.toFixed(2)}`);
-                    }
-                }
-            });
-        });
+        function showPolicyModal(title, content) {
+            alert(`${title}\n\n${content}`);
+        }
+
+        // Inicializar quando o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', initializePage);
     </script>
 </body>
 </html>
